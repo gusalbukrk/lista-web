@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .d-none {
+      display: none;
+    }
+
+    nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    img {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 1rem;
+    }
+
+    div {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    @media (max-width: 420px) {
+      img {
+        display: initial;
+      }
+
+      nav div {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <nav>
+    <img src="./bars.svg">
+    <div>
+      <a href="https://google.com">Google</a>
+      <a href="https://youtube.com">Youtube</a>
+      <a href="https://wikipedia.com">Wikipedia</a>
+      <a href="https://reddit.com">Reddit</a>
+      <a href="https://stackoverflow.com">StackOverflow</a>
+    </div>
+  </nav>
+  <script>
+    const img = document.querySelector('img');
+    const div = document.querySelector('div');
+
+    const isMobile = () => matchMedia('(max-width: 420px)').matches;
+
+    !isMobile() && img.classList.add('d-none');
+    isMobile() && div.classList.add('d-none');
+
+    img.addEventListener('click', () => {
+      div.classList.toggle('d-none');
+      img.src = /x\.svg$/.test(img.src) ? './bars.svg' : './x.svg';
+    });
+
+    window.addEventListener('resize', () => {
+      // open menu when window is resized to mobile size
+      if (isMobile() && img.classList.contains('d-none')) {
+        img.classList.remove('d-none');
+        div.classList.add('d-none');
+      }
+      
+      // close menu when window is resized to desktop size
+      if (!isMobile() && !img.classList.contains('d-none')) {
+        img.classList.add('d-none');
+        div.classList.remove('d-none');
+        img.src = './bars.svg';
+      }
+    });
+  </script>
+</body>
+</html>
