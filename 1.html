@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --background: lightgray;
+    }
+
+    body {
+      padding: 3rem 0;
+    }
+
+    main {
+      border: 1px solid #000;
+      width: 350px;
+      padding: 1rem;
+      max-width: 90%;
+      margin: 0 auto;
+      background-color: var(--background);
+    }
+
+    #result {
+      width: 100%;
+      margin-bottom: 1rem;
+      display: block;
+      height: 80px;
+      background-color: white;
+      font-size: 2rem;
+      text-align: right;
+      padding: 0.5rem;
+      border: none;
+    }
+    
+    #body {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .row {
+      display: flex;
+      height: 80px;
+      gap: 1rem;
+    }
+
+    .key {
+      width: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      font-weight: bold;
+      background-color: white;
+      cursor: pointer;
+    }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <main>
+    <!-- <section id="result"></section> -->
+    <form>
+      <input type="text" id="result">
+    </form>
+    <section id="body"></section>
+  </main>
+  <template id="row">
+    <div class="row"></div>
+  </template>
+  <template id="key">
+    <div class="key"></div>
+  </template>
+  <script>
+    const random = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    const changeBackgroundColor = (color) => document.querySelector(':root').style.setProperty("--background", color);
+
+    const chunkify = (arr, size) => {
+      const chunks = [];
+
+      for (let i = 0; i < Math.ceil(arr.length / size); i++) {
+        chunks.push(arr.slice(size * i, (i + 1) * size));
+      }
+
+      return chunks;
+    };
+
+    const keys = '789/456*123-0.+='.split('');
+    const body = document.querySelector('#body');
+
+    chunkify(keys, 4).forEach(row => {
+      const rowEl = document.querySelector('#row').cloneNode(true).content;
+
+      row.forEach(key => {
+        const keyEl = document.querySelector('#key').cloneNode(true).content;
+  
+        keyEl.querySelector('.key').textContent = key;
+
+        rowEl.querySelector('.row').appendChild(keyEl);
+      });
+
+      body.appendChild(rowEl);
+    });
+
+    let result = "";
+
+    const renderResult = () => document.querySelector('#result').value = result;
+
+    document.querySelectorAll('.key').forEach(key => key.addEventListener('click', e => {
+      const key = e.target.textContent;
+
+      if (key === '=') {
+        result = String(eval(result));
+      } else {
+        result += e.target.textContent;
+      }
+
+      renderResult();
+    }));
+
+    document.querySelector('#result').addEventListener('input', (e) => {
+      result = e.target.value;
+      renderResult();
+    });
+
+    document.querySelector('form').addEventListener('submit', e => {
+      e.preventDefault();
+      [...document.querySelectorAll('.key')].find(key => key.textContent === '=').click();
+    });
+    
+    addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        [...document.querySelectorAll('.key')].find(key => key.textContent === '=').click();
+      } else if (e.key === 'Backspace') {
+        result = result.slice(0, -1);
+        renderResult();
+      } else if (e.key === 'Escape') {
+        result = '';
+        renderResult();
+      } else if (e.key === 'Alt') {
+        const r = () => random(0, 255);
+
+        changeBackgroundColor(`rgb(${r()}, ${r()}, ${r()})`);
+      }
+    });
+  </script>
+</body>
+</html>
