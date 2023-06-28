@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    div {
+      border: 1px solid #000;
+      width: 500px;
+      height: 350px;
+      margin: 2rem auto 1rem;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    img.show {
+      display: inline-block;
+    }
+
+    aside {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    i {
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <img class="show" src="imgs/1.jpg">
+    <img src="imgs/2.jpg">
+    <img src="imgs/3.jpg">
+    <img src="imgs/4.jpg">
+    <img src="imgs/5.jpg">
+  </div>
+  <aside>
+    <i class="fa-solid fa-arrow-left"></i>
+    <i id="play" class="fa-solid fa-pause"></i>
+    <i class="fa-solid fa-arrow-right"></i>
+  </aside>
+  <script>
+    const duration = 3000;
+
+    let index = 0;
+    const imgs = document.querySelectorAll('img');
+
+    function move(newIndex) {
+      imgs[index].classList.remove('show');
+
+      index = newIndex;
+      console.log(index);
+
+      imgs[index].classList.add('show');
+    }
+
+    const next = () => move(index === imgs.length - 1 ? 0 : index + 1);
+    const previous = () => move(index === 0 ? imgs.length - 1 : index - 1);
+
+    let interval = setInterval(next, duration);
+
+    const play = document.querySelector('#play');
+
+    function resetInterval(cb) {
+      clearInterval(interval);
+      cb();
+      if (!play.classList.contains('fa-play')) interval = setInterval(next, duration);
+    }
+
+    document.querySelector('.fa-arrow-left').addEventListener('click', () => resetInterval(previous));
+    document.querySelector('.fa-arrow-right').addEventListener('click', () => resetInterval(next));
+
+    play.addEventListener('click', (e) => {
+      e.target.classList.toggle('fa-pause');
+      e.target.classList.toggle('fa-play');
+
+      if (e.target.classList.contains('fa-pause')) {
+        interval = setInterval(next, duration);
+      } else {
+        clearInterval(interval);
+      }
+    });
+  </script>
+</body>
+</html>
