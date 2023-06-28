@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    img {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 1rem;
+      display: none;
+      cursor: pointer;
+    }
+
+    div {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    @media (max-width: 420px) {
+      img {
+        display: initial;
+      }
+
+      div {
+        flex-direction: column;
+        align-items: center;
+        display: none;
+      }
+    }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <nav>
+    <img src="./bars.svg">
+    <div>
+      <a href="https://google.com">Google</a>
+      <a href="https://youtube.com">Youtube</a>
+      <a href="https://wikipedia.com">Wikipedia</a>
+      <a href="https://reddit.com">Reddit</a>
+      <a href="https://stackoverflow.com">StackOverflow</a>
+    </div>
+  </nav>
+  <script>
+    const img = document.querySelector('img');
+    const div = document.querySelector('div');
+
+    img.addEventListener('click', () => {
+      div.style.display = div.style.display === 'flex' ? '' : 'flex';
+      img.src = /x\.svg$/.test(img.src) ? './bars.svg' : './x.svg';
+    });
+
+    // close menu when window is resized to desktop size
+    window.addEventListener('resize', () => {
+      if (/x\.svg$/.test(img.src) && matchMedia('(min-width: 421px)').matches) {
+        div.style.display = '';
+        img.src = './bars.svg';
+      }
+    });
+  </script>
+</body>
+</html>
