@@ -16,6 +16,8 @@
 
     body {
       padding: 3rem 0;
+      font-size: 2rem;
+      font-weight: bold;
     }
 
     main {
@@ -30,13 +32,14 @@
     #result {
       width: 100%;
       margin-bottom: 1rem;
-      display: block;
       height: 80px;
       background-color: white;
-      font-size: 2rem;
       text-align: right;
       padding: 0.5rem;
       border: none;
+      display: flex;
+      align-items: center;
+      justify-content: end;
     }
     
     #body {
@@ -56,8 +59,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 2rem;
-      font-weight: bold;
       background-color: white;
       cursor: pointer;
     }
@@ -66,10 +67,7 @@
 </head>
 <body>
   <main>
-    <!-- <section id="result"></section> -->
-    <form>
-      <input type="text" id="result">
-    </form>
+    <section id="result"></section>
     <section id="body"></section>
   </main>
   <template id="row">
@@ -79,7 +77,8 @@
     <div class="key"></div>
   </template>
   <script>
-    const random = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const random = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min; // both inclusive
+    const randomRGB = () => random(0, 255);
 
     const changeBackgroundColor = (color) => document.querySelector(':root').style.setProperty("--background", color);
 
@@ -93,10 +92,10 @@
       return chunks;
     };
 
-    const keys = '789/456*123-0.+='.split('');
+    const keys = '789/456*123-0.+=';
     const body = document.querySelector('#body');
 
-    chunkify(keys, 4).forEach(row => {
+    chunkify(keys.split(''), 4).forEach(row => {
       const rowEl = document.querySelector('#row').cloneNode(true).content;
 
       row.forEach(key => {
@@ -112,7 +111,7 @@
 
     let result = "";
 
-    const renderResult = () => document.querySelector('#result').value = result;
+    const renderResult = () => document.querySelector('#result').textContent = result;
 
     document.querySelectorAll('.key').forEach(key => key.addEventListener('click', e => {
       const key = e.target.textContent;
@@ -126,18 +125,11 @@
       renderResult();
     }));
 
-    document.querySelector('#result').addEventListener('input', (e) => {
-      result = e.target.value;
-      renderResult();
-    });
-
-    document.querySelector('form').addEventListener('submit', e => {
-      e.preventDefault();
-      [...document.querySelectorAll('.key')].find(key => key.textContent === '=').click();
-    });
-    
-    addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
+    window.addEventListener('keydown', e => {
+      if (keys.replace('=', '').includes(e.key)) {
+        result += e.key;
+        renderResult();
+      } else if (e.key === 'Enter') {
         [...document.querySelectorAll('.key')].find(key => key.textContent === '=').click();
       } else if (e.key === 'Backspace') {
         result = result.slice(0, -1);
@@ -146,9 +138,7 @@
         result = '';
         renderResult();
       } else if (e.key === 'Alt') {
-        const r = () => random(0, 255);
-
-        changeBackgroundColor(`rgb(${r()}, ${r()}, ${r()})`);
+        changeBackgroundColor(`rgb(${randomRGB()}, ${randomRGB()}, ${randomRGB()})`);
       }
     });
   </script>
